@@ -27,10 +27,29 @@ public class AuthService {
     }
 
     public boolean register(User user) {
+        if (isUserExists(user.getUsername())) {
+            return false;
+        }
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write(user.getUsername() + "," + user.getPassword() + "," + user.getRole());
             writer.newLine();
             return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean isUserExists(String username) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts[0].equals(username)) {
+                    return true;
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -14,9 +14,15 @@ public class RegisterServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            response.sendRedirect("register.jsp?error=1");
+            return;
+        }
+
         User newUser = new User(username, password, "user");
         String filePath = getServletContext().getRealPath("/users.txt");
         AuthService auth = new AuthService(filePath);
+
         if (auth.register(newUser)) {
             response.sendRedirect("login.jsp?registered=true");
         } else {
