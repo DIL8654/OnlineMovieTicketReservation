@@ -19,7 +19,8 @@ public class SeatBookingServlet extends HttpServlet {
         }
 
         String username = (String) session.getAttribute("user");
-        String seatNumber = request.getParameter("seatNumber");
+        String role = (String) session.getAttribute("role");
+        String action = request.getParameter("action");
         String filePath = getServletContext().getRealPath("/seats.txt");
 
         List<String[]> seats = new ArrayList<>();
@@ -32,10 +33,22 @@ public class SeatBookingServlet extends HttpServlet {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (String[] seat : seats) {
-                if (seat[0].equals(seatNumber) && seat[1].equals("available")) {
-                    writer.write(seat[0] + "," + username);
+                String seatNumber = seat[0];
+                String seatStatus = seat[1];
+
+                if (action.startsWith("book_") && action.substring(5).equals(seatNumber) && seatStatus.equals("available")) {
+                    // Book the seat
+                    writer.write(seatNumber + "," + username);
+                } else if (action.startsWith("cancel_") && action.substring(7).equals(seatNumber)) {
+                    // Cancel the booking if the user is the one who booked it or is an admin
+                    if (seatStatus.equals(username) || "admin".equals(role)) {
+                        writer.write(seatNumber + ",available");
+                    } else {
+                        writer.write(seatNumber + "," + seatStatus);
+                    }
                 } else {
-                    writer.write(seat[0] + "," + seat[1]);
+                    // Keep the seat as is
+                    writer.write(seatNumber + "," + seatStatus);
                 }
                 writer.newLine();
             }
