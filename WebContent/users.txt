@@ -1,0 +1,2 @@
+john,pass123,user
+admin,adminpass,admin

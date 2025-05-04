@@ -1,0 +1,5 @@
+<form method="post" action="RegisterServlet">
+  <input type="text" name="username" required>
+  <input type="password" name="password" required>
+  <button type="submit">Register</button>
+</form>
