@@ -16,9 +16,13 @@ public class LoginServlet extends HttpServlet {
 
         String filePath = getServletContext().getRealPath("/users.txt");
         AuthService auth = new AuthService(filePath);   
-        if (auth.authenticate(username, password)) {
+        String role = auth.getRole(username, password);
+        System.out.println("Role: " + role);
+
+        if (role != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", username);
+            session.setAttribute("role", role);
             response.sendRedirect("dashboard.jsp");
         } else {
             response.sendRedirect("login.jsp?error=1");
