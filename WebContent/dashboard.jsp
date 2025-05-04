@@ -68,8 +68,11 @@
             <a href="seats.jsp" class="btn btn-teal rounded-pill">Book Seats</a>
         </div>
         <div class="text-center mt-4">
-            <a href="LogoutServlet" class="btn btn-teal rounded-pill">Logout</a>
-        </div>
+          <a href="addMovie.jsp" class="btn btn-teal rounded-pill">Add New Movie</a>
+      </div>
+      <div class="text-center mt-4">
+        <a href="movies.jsp" class="btn btn-teal rounded-pill">View Available Movies</a>
+    </div>
     </div>
     <style>
         .btn-teal {

@@ -21,7 +21,13 @@ public class SeatBookingServlet extends HttpServlet {
         String username = (String) session.getAttribute("user");
         String role = (String) session.getAttribute("role");
         String action = request.getParameter("action");
-        String filePath = getServletContext().getRealPath("/seats.txt");
+        String movieFile = request.getParameter("movieFile");
+        if (movieFile == null || movieFile.isEmpty()) {
+            response.sendRedirect("movies.jsp");
+            return;
+        }
+
+String filePath = getServletContext().getRealPath("/") + movieFile;
 
         List<String[]> seats = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {

@@ -34,7 +34,7 @@
         <url-pattern>/RegisterServlet</url-pattern>
     </servlet-mapping>
 
-<!-- BookTicketServlet Configuration -->
+    <!-- BookTicketServlet Configuration -->
     <servlet>
         <servlet-name>SeatBookingServlet</servlet-name>
         <servlet-class>controller.SeatBookingServlet</servlet-class>
@@ -43,5 +43,15 @@
         <servlet-name>SeatBookingServlet</servlet-name>
         <url-pattern>/SeatBookingServlet</url-pattern>
     </servlet-mapping>
+
+    <!-- MovieListServlet Configuration -->
+    <servlet>
+        <servlet-name>AddMovieServlet</servlet-name>
+        <servlet-class>controller.AddMovieServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddMovieServlet</servlet-name>
+        <url-pattern>/AddMovieServlet</url-pattern>
+    </servlet-mapping>  
 
 </web-app>
