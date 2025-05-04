@@ -34,4 +34,14 @@
         <url-pattern>/RegisterServlet</url-pattern>
     </servlet-mapping>
 
+<!-- BookTicketServlet Configuration -->
+    <servlet>
+        <servlet-name>SeatBookingServlet</servlet-name>
+        <servlet-class>controller.SeatBookingServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SeatBookingServlet</servlet-name>
+        <url-pattern>/SeatBookingServlet</url-pattern>
+    </servlet-mapping>
+
 </web-app>

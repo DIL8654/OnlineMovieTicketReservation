@@ -8,6 +8,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="dashboard.jsp">Online Movie Ticket Reservation</a>
+        <div class="d-flex">
+            <a href="dashboard.jsp" class="btn btn-outline-primary me-2">Dashboard</a>
+            <a href="LogoutServlet" class="btn btn-outline-danger">Logout</a>
+        </div>
+    </div>
+</nav>
     <div class="container mt-5">
         <h2 class="text-center mb-4">Dashboard</h2>
         <%
@@ -55,6 +64,9 @@
         <% } else { %>
         <h3 class="text-center">Welcome <%= session.getAttribute("user") %></h3>
         <% } %>
+        <div class="text-center mt-4">
+            <a href="seats.jsp" class="btn btn-teal rounded-pill">Book Seats</a>
+        </div>
         <div class="text-center mt-4">
             <a href="LogoutServlet" class="btn btn-teal rounded-pill">Logout</a>
         </div>
