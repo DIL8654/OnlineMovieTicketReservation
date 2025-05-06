@@ -67,7 +67,10 @@
                 <div class="tab-content" id="adminTabsContent">
                     <!-- User Management Tab -->
                     <div class="tab-pane fade show active" id="user-management" role="tabpanel" aria-labelledby="user-management-tab">
-                        <h3>User Management</h3>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3>User Management</h3>
+                            <a href="editUser.jsp" class="btn btn-teal btn-sm">Create New User</a>
+                        </div>
                         <table class="table table-bordered table-striped mt-4">
                             <thead class="table-dark">
                                 <tr>
@@ -106,9 +109,9 @@
 
                     <!-- Movie Management Tab -->
                     <div class="tab-pane fade" id="movie-management" role="tabpanel" aria-labelledby="movie-management-tab">
-                        <h3>Movie Management</h3>
-                        <div class="text-center mt-4">
-                            <a href="addMovie.jsp" class="btn btn-teal rounded-pill">Add New Movie</a>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3>Movie Management</h3>
+                            <a href="addMovie.jsp" class="btn btn-teal btn-sm">Create New Movie</a>
                         </div>
                         <div class="mt-4">
                             <h5>Available Movies</h5>
