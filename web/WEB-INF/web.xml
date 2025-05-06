@@ -52,6 +52,16 @@
     <servlet-mapping>
         <servlet-name>AddMovieServlet</servlet-name>
         <url-pattern>/AddMovieServlet</url-pattern>
-    </servlet-mapping>  
+    </servlet-mapping> 
+
+    <!-- UpdateUserServlet Configuration -->
+    <servlet>
+        <servlet-name>UpdateUserServlet</servlet-name>
+        <servlet-class>controller.UpdateUserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateUserServlet</servlet-name>
+        <url-pattern>/UpdateUserServlet</url-pattern>
+    </servlet-mapping> 
 
 </web-app>
