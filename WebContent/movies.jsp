@@ -18,7 +18,62 @@
         </div>
     </nav>
     <div class="container mt-5">
-        <h2 class="text-center mb-4">Available Movies</h2>
+        <!-- Booked Movies Section -->
+        <h2 class="text-center mb-4">Your Booked Movies</h2>
+        <div class="row">
+            <%
+                // Retrieve the logged-in user and role from the session
+                String loggedInUser = (String) session.getAttribute("user");
+                String role = (String) session.getAttribute("role");
+
+                if (loggedInUser == null || role == null) {
+                    response.sendRedirect("login.jsp");
+                    return;
+                }
+
+                // Display booked movies for the logged-in user
+                String bookingsFilePath = application.getRealPath("/bookings.txt");
+                try (BufferedReader reader = new BufferedReader(new FileReader(bookingsFilePath))) {
+                    String line;
+                    boolean hasBookings = false;
+                    while ((line = reader.readLine()) != null) {
+                        String[] booking = line.split(",");
+                        if (booking[0].equals(loggedInUser)) {
+                            hasBookings = true;
+            %>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow">
+                    <img src="images/default_movie.jpg" class="card-img-top" alt="<%= booking[1] %>">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><%= booking[1] %></h5>
+                        <p>Seats: <%= booking[2] %></p>
+                    </div>
+                </div>
+            </div>
+            <%
+                        }
+                    }
+                    if (!hasBookings) {
+            %>
+            <p class="text-center">You have no booked movies at the moment.</p>
+            <%
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+            %>
+            <p class="text-center text-danger">An error occurred while loading your booked movies.</p>
+            <%
+                }
+            %>
+        </div>
+
+        <% if ("admin".equals(role)) { %>
+        <!-- Admin Movie Management Section -->
+        <hr>
+        <h2 class="text-center mb-4">Admin Movie Management</h2>
+        <div class="text-center mb-4">
+            <a href="addMovie.jsp" class="btn btn-teal rounded-pill">Create New Movie</a>
+        </div>
         <div class="row">
             <%
                 // Directory where movie seat files are stored
@@ -39,17 +94,18 @@
                     <img src="images/default_movie.jpg" class="card-img-top" alt="<%= movieName %>">
                     <div class="card-body text-center">
                         <h5 class="card-title"><%= movieName %></h5>
-                        <a href="seats.jsp?movie=<%= fileName %>" class="btn btn-teal rounded-pill">Book</a>
+                        <a href="editMovie.jsp?movie=<%= fileName %>" class="btn btn-primary rounded-pill">Edit</a>
                     </div>
                 </div>
             </div>
-            <% 
+            <%
                     }
-                } else { 
+                } else {
             %>
-            <p class="text-center">No movies available at the moment.</p>
+            <p class="text-center">No movies available for management.</p>
             <% } %>
         </div>
+        <% } %>
     </div>
     <style>
         .btn-teal {

@@ -36,6 +36,16 @@
     </style>
 </head>
 <body class="bg-light">
+    <%
+        // Retrieve the role from the session
+        String role = (String) session.getAttribute("role");
+        String loggedInUser = (String) session.getAttribute("user");
+        if (role == null || loggedInUser == null) {
+            // Redirect to login page if role or user is not set
+            response.sendRedirect("login.jsp");
+            return;
+        }
+    %>
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, teal, #006d6d);">
         <div class="container-fluid">
@@ -51,22 +61,110 @@
         <div class="row">
             <!-- Left Panel -->
             <div class="col-md-3 left-panel">
-                <h4>Admin Panel</h4>
-                <ul class="nav nav-pills flex-column" id="adminTabs" role="tablist">
+                <h4>User Panel</h4>
+                <ul class="nav nav-pills flex-column" id="userTabs" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="user-management-tab" data-bs-toggle="tab" href="#user-management" role="tab" aria-controls="user-management" aria-selected="true">User Management</a>
+                        <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="movie-management-tab" data-bs-toggle="tab" href="#movie-management" role="tab" aria-controls="movie-management" aria-selected="false">Movie Management</a>
                     </li>
+                    <% if ("admin".equals(role)) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" id="user-management-tab" data-bs-toggle="tab" href="#user-management" role="tab" aria-controls="user-management" aria-selected="false">User Management</a>
+                    </li>
+                    <% } %>
                 </ul>
             </div>
 
             <!-- Right Panel -->
             <div class="col-md-9">
-                <div class="tab-content" id="adminTabsContent">
-                    <!-- User Management Tab -->
-                    <div class="tab-pane fade show active" id="user-management" role="tabpanel" aria-labelledby="user-management-tab">
+                <div class="tab-content" id="userTabsContent">
+                    <!-- Profile Tab -->
+                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <h3>Profile</h3>
+                        <table class="table table-bordered table-striped mt-4">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><%= loggedInUser %></td>
+                                    <td><%= role %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Movie Management Tab -->
+                    <div class="tab-pane fade" id="movie-management" role="tabpanel" aria-labelledby="movie-management-tab">
+                        <h3>Movie Management</h3>
+                        <div class="mt-4">
+                            <h5>Your Booked Movies</h5>
+                            <ul class="list-group">
+                                <%
+                                    String movieFilePath = application.getRealPath("/bookings.txt");
+                                    try (BufferedReader reader = new BufferedReader(new FileReader(movieFilePath))) {
+                                        String line;
+                                        while ((line = reader.readLine()) != null) {
+                                            String[] booking = line.split(",");
+                                            if (booking[0].equals(loggedInUser)) {
+                                %>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <%= booking[1] %> <!-- Movie Name -->
+                                    <span>Seats: <%= booking[2] %></span>
+                                </li>
+                                <%
+                                            }
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                %>
+                            </ul>
+                        </div>
+                        <% if ("admin".equals(role)) { %>
+                        <hr>
+                        <h5>Admin Movie Management</h5>
+                        <div class="text-center mb-4">
+                            <a href="addMovie.jsp" class="btn btn-teal rounded-pill">Create New Movie</a>
+                        </div>
+                        <div class="row">
+                            <%
+                                String movieDirPath = application.getRealPath("/");
+                                File movieDir = new File(movieDirPath);
+                                File[] movieFiles = movieDir.listFiles((dir, name) -> name.endsWith("_seats.txt"));
+
+                                if (movieFiles != null && movieFiles.length > 0) {
+                                    for (File movieFile : movieFiles) {
+                                        String fileName = movieFile.getName();
+                                        String movieName = fileName.substring(0, fileName.indexOf("_seats.txt")).replace("_", " ");
+                            %>
+                            <div class="col-md-4 mb-4">
+                                <div class="card shadow">
+                                    <img src="images/default_movie.jpg" class="card-img-top" alt="<%= movieName %>">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title"><%= movieName %></h5>
+                                        <a href="editMovie.jsp?movie=<%= fileName %>" class="btn btn-primary rounded-pill">Edit</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <%
+                                    }
+                                } else {
+                            %>
+                            <p class="text-center">No movies available for management.</p>
+                            <% } %>
+                        </div>
+                        <% } %>
+                    </div>
+
+                    <!-- Admin-Specific Content -->
+                    <% if ("admin".equals(role)) { %>
+                    <div class="tab-pane fade" id="user-management" role="tabpanel" aria-labelledby="user-management-tab">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3>User Management</h3>
                             <a href="editUser.jsp" class="btn btn-teal btn-sm">Create New User</a>
@@ -106,36 +204,7 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <!-- Movie Management Tab -->
-                    <div class="tab-pane fade" id="movie-management" role="tabpanel" aria-labelledby="movie-management-tab">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h3>Movie Management</h3>
-                            <a href="addMovie.jsp" class="btn btn-teal btn-sm">Create New Movie</a>
-                        </div>
-                        <div class="mt-4">
-                            <h5>Available Movies</h5>
-                            <ul class="list-group">
-                                <%
-                                    File movieDir = new File(application.getRealPath("/"));
-                                    File[] movieFiles = movieDir.listFiles((dir, name) -> name.endsWith("_seats.txt"));
-                                    if (movieFiles != null && movieFiles.length > 0) {
-                                        for (File movieFile : movieFiles) {
-                                            String movieName = movieFile.getName().replace("_seats.txt", "").replace("_", " ");
-                                %>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <%= movieName %>
-                                    <a href="seats.jsp?movie=<%= movieFile.getName() %>" class="btn btn-outline-primary btn-sm">View Seats</a>
-                                </li>
-                                <% 
-                                        }
-                                    } else { 
-                                %>
-                                <li class="list-group-item">No movies available.</li>
-                                <% } %>
-                            </ul>
-                        </div>
-                    </div>
+                    <% } %>
                 </div>
             </div>
         </div>
