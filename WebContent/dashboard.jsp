@@ -175,6 +175,7 @@
                                     <th>Username</th>
                                     <th>Password</th>
                                     <th>Role</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -191,11 +192,19 @@
                                         e.printStackTrace();
                                     }
                                     for (String[] user : users) {
+                                        boolean isDeactivated = user.length > 5 && "deactivated".equals(user[5]); // Check if the user is deactivated
                                 %>
                                 <tr>
                                     <td><%= user[0] %></td>
                                     <td><%= user[1] %></td>
                                     <td><%= user[2] %></td>
+                                    <td>
+                                        <% if (isDeactivated) { %>
+                                            <span class="badge bg-danger">Deactivated</span>
+                                        <% } else { %>
+                                            <span class="badge bg-success">Active</span>
+                                        <% } %>
+                                    </td>
                                     <td>
                                         <a href="editUser.jsp?username=<%= user[0] %>" class="btn btn-primary btn-sm">Edit</a>
                                     </td>

@@ -11,19 +11,25 @@ public class AuthService {
         this.filePath = filePath;
     }
 
-    public boolean authenticate(String username, String password) {
+    public String authenticate(String username, String password) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts[0].equals(username) && parts[1].equals(password)) {
-                    return true;
+                if (parts[0].equals(username)) {
+                    if (parts[1].equals(password)) {
+                        if ("deactivated".equals(parts[5])) { // Check if the user is deactivated
+                            return "deactivated";
+                        }
+                        return "authenticated";
+                    }
+                    return "invalid_password";
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return false;
+        return "user_not_found";
     }
 
     public boolean register(User user) {
@@ -32,7 +38,7 @@ public class AuthService {
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(user.getUsername() + "," + user.getPassword() + "," + user.getRole());
+            writer.write(user.getUsername() + "," + user.getPassword() + "," + user.getRole()  + "," + user.getFirstName()  + "," + user.getLastName() + ",active"); // Default status is active
             writer.newLine();
             return true;
         } catch (IOException e) {
@@ -57,17 +63,17 @@ public class AuthService {
     }
 
     public String getRole(String username, String password) {
-    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts[0].equals(username) && parts[1].equals(password)) {
-                return parts[2]; // Return the role
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts[0].equals(username) && parts[1].equals(password)) {
+                    return parts[2]; // Return the role
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    } catch (IOException e) {
-        e.printStackTrace();
+        return null;
     }
-    return null;
-}
 }

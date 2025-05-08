@@ -22,7 +22,15 @@
                 <button type="submit" class="btn btn-teal w-100 rounded-pill">Login</button>
             </form>
             <% if (request.getParameter("error") != null) { %>
-                <p class="text-danger text-center mt-3">Invalid username or password. Please try again.</p>
+                <p class="text-danger text-center mt-3">
+                    <% if ("deactivated".equals(request.getParameter("error"))) { %>
+                        Your account has been deactivated. Please contact the administrator.
+                    <% } else if ("invalid_password".equals(request.getParameter("error"))) { %>
+                        Invalid password. Please try again.
+                    <% } else if ("user_not_found".equals(request.getParameter("error"))) { %>
+                        User not found. Please register first.
+                    <% } %>
+                </p>
             <% } %>
             <% if (request.getParameter("registered") != null) { %>
                 <p class="text-success text-center mt-3">Registration successful! Please log in.</p>
